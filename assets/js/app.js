@@ -64,10 +64,11 @@ db.ref('players').on('value', function(data) {
     }
 
     //display of players
-    
+
 
 });
 
+//Player 1 and 2 joining events
 $("#Player-1 > button").on("click", function(e){
     e.preventDefault();
 
@@ -82,6 +83,9 @@ $("#Player-2 > button").on("click", function(e){
     usr = $("#Player-2 > input").val().trim();
     db.ref('players/player2').update({username: usr});
 });
+
+//Player 1 and 2 moves events
+
 
 
 // Chat Functionality
