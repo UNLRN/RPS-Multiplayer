@@ -13,8 +13,30 @@ firebase.initializeApp(config);
 const db = firebase.database();
 
 let usr;
+let usrKey;
 $("#Player-2").hide();
 $("#join-chat").hide();
+
+const connectionRef = db.ref('connections');
+const connectedRef = db.ref(".info/connected");
+connectedRef.on('value', function(snap) {
+    if (snap.val() === true) {
+        console.log('connected');
+        let con = db.ref('connections').push(true);
+        usrKey = con.key;
+        con.onDisconnect().remove();
+    }
+});
+
+// var firebaseRef = new Firebase('http://INSTANCE.firebaseio.com');
+// firebaseRef.child('.info/connected').on('value', function(connectedSnap) {
+//   if (connectedSnap.val() === true) {
+//     /* we're connected! */
+//   } else {
+//     /* we're disconnected! */
+//   }
+// });
+
 
 // Username and Players
 db.ref('players').on('value', function(data) {
@@ -29,6 +51,7 @@ db.ref('players').on('value', function(data) {
     if ((val.player1.username === "") && (val.player2.username === "")) {
         $("#join-chat").hide();
         $("#Player-2").hide();
+        $("#opponent").text("Waiting for Player 1");
         $("#opponent").show();
     }
 
@@ -73,15 +96,22 @@ $("#Player-1 > button").on("click", function(e){
     e.preventDefault();
 
     usr = $("#Player-1 > input").val().trim();
-    db.ref('players/player1').set({username: usr});
-
+    db.ref('players/player1').update({
+        username: usr,
+        key: usrKey
+    });
+    $("#Player-1 > input").val("");
 });
 
 $("#Player-2 > button").on("click", function(e){
     e.preventDefault();
 
     usr = $("#Player-2 > input").val().trim();
-    db.ref('players/player2').update({username: usr});
+    db.ref('players/player2').update({
+        username: usr,
+        key: usrKey
+    });
+    $("#Player-2 > input").val("");
 });
 
 //Player 1 and 2 moves events
@@ -139,6 +169,7 @@ const setMessage = function (data) {
 const saveMessage = function (e) {
     e.preventDefault();
 
+    if (usr === undefined) usr = "anonymous";
     const msgText = $("#message").val().trim();
     // Check that the user entered a message
     if ($("#message").val().length > 0) {
