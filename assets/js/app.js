@@ -11,14 +11,15 @@ let config = {
 firebase.initializeApp(config);
 
 const db = firebase.database();
-const player1ref = db.ref('players/player1');
-const player2ref = db.ref('players/player2');
+const player1ref = db.ref('rps/players/player1');
+const player2ref = db.ref('rps/players/player2');
 
-let usr;
-let usrKey;
-let player;
+let usr, usrKey, player;
+let wins = 0;
+let losses = 0;
 $("#player2").hide();
 $("#join-chat").hide();
+$("#scores").hide();
 
 const connectedUsers = db.ref('users');
 const connectedRef = db.ref(".info/connected");
@@ -29,19 +30,15 @@ connectedRef.on('value', function(snap) {
         con.onDisconnect().remove();
     }
 });
+db.ref().update({games:0});
 
-// var firebaseRef = new Firebase('http://INSTANCE.firebaseio.com');
-// firebaseRef.child('.info/connected').on('value', function(connectedSnap) {
-//   if (connectedSnap.val() === true) {
-//     /* we're connected! */
-//   } else {
-//     /* we're disconnected! */
-//   }
-// });
-
-
+db.ref().once('value', function(snap) {
+    if (!snap.hasChild("rps")) {
+        db.ref().update({rps: ""});
+    }
+});
 // Username and Players
-db.ref().on('value', function(data) {
+db.ref('rps').on('value', function(data) {
     const val = data.val();
 
     if (data.hasChild("players")) {
@@ -94,6 +91,47 @@ db.ref().on('value', function(data) {
             } else if (player == 2) {
                 $("#player2-moves > div").removeClass("disabled");
             }
+            $("#scores").show();
+
+        }
+
+        if ((data.child("players/player1/choice").exists()) && (data.child("players/player2/choice").exists())) {
+            if (player === 1) {
+                let result = RPS(val.players.player1.choice, val.players.player2.choice)
+                console.log("You "+result);
+                if (result == "Win") {
+                    wins++;
+                } else if (result == "Lose") {
+                    losses++;
+                }
+                $("#wins").text("Wins: " + wins);
+                $("#losses").text("Losses: " + losses);
+                $("#result").text("You " + result);
+                db.ref("rps/players/player1/choice").remove();
+                setTimeout(function() {
+                    $("#player1-moves > div").removeClass("disabled");
+                    $("#player1-moves > div").css({ "background-color": "#fff", "color":"#333" });
+                    $("#result").text("");
+                }, 2000);
+            }
+            if (player === 2) {
+                let result = RPS(val.players.player2.choice, val.players.player1.choice);
+                console.log("You "+result);
+                if (result == "Win") {
+                    wins++;
+                } else if (result == "Lose") {
+                    losses++;
+                }
+                $("#wins").text("Wins: " + wins);
+                $("#losses").text("Losses: " + losses);
+                $("#result").text("You " + result);
+                db.ref("rps/players/player2/choice").remove();
+                setTimeout(function() {
+                    $("#player2-moves > div").removeClass("disabled");
+                    $("#player2-moves > div").css({ "background-color": "#fff", "color":"#333" });
+                    $("#result").text("");
+                }, 2000);
+            }
         }
 
     } else {
@@ -107,13 +145,36 @@ db.ref().on('value', function(data) {
 
 });
 
+
+function RPS (player1, player2) {
+    let result = {
+        "Paper": {
+            "Rock": "Win",
+            "Paper": "Tie",
+            "Scissors": "Lose"
+        },
+        "Rock": {
+            "Rock": "Tie",
+            "Paper": "Lose",
+            "Scissors": "Win"
+        },
+        "Scissors": {
+            "Rock": "Lose",
+            "Paper": "Win",
+            "Scissors": "Tie"
+        }
+    };
+    return result[player1][player2]
+}
+
+
 //Player 1 and 2 joining events
 $("#Player-1 > button").on("click", function(e){
     e.preventDefault();
 
     player = 1;
     usr = $("#Player-1 > input").val().trim();
-    db.ref('players/player1').update({
+    db.ref('rps/players/player1').update({
         username: usr,
         key: usrKey
     });
@@ -129,7 +190,7 @@ $("#Player-2 > button").on("click", function(e){
 
     player = 2;
     usr = $("#Player-2 > input").val().trim();
-    db.ref('players/player2').update({
+    db.ref('rps/players/player2').update({
         username: usr,
         key: usrKey
     });
@@ -143,18 +204,12 @@ $("#Player-2 > button").on("click", function(e){
 //Player 1 and 2 moves events
 $("#player1-moves > div").on("click", function() {
     $(this).css({ "background-color": "red", "color": "white"});
-    if (!$("#player1-moves > div").hasClass("disabled")) {
-        $("#player1-moves > div").addClass("disabled");
-    }
     let choice = $(this).text();
     player1ref.update({choice: choice});
 });
 
 $("#player2-moves > div").on("click", function() {
     $(this).css({ "background-color": "red", "color": "white"});
-    if (!$("#player2-moves > div").hasClass("disabled")) {
-        $("#player2-moves > div").addClass("disabled");
-    }
     let choice = $(this).text();
     player2ref.update({choice: choice});
 });
