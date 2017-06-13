@@ -30,7 +30,25 @@ connectedRef.on('value', function(snap) {
         con.onDisconnect().remove();
     }
 });
-db.ref().update({games:0});
+
+connectedUsers.on('child_removed', function(snap) {
+    let player1Key;
+    let player2Key; 
+    db.ref('rps/players/player1').once('value', function(snap) {
+        player1Key = snap.val().player1key;
+    });
+    db.ref('rps/players/player2').once('value', function(snap) {
+        player2Key = snap.val().player2key;
+    });
+    if (snap.key === player1Key) {
+        db.ref('rps/players/player1').remove();
+    }
+    if (snap.key === player2Key) {
+        db.ref('rps/players/player2').remove();
+    }
+});
+
+// db.ref().update({games:0});
 
 db.ref().once('value', function(snap) {
     if (!snap.hasChild("rps")) {
@@ -176,7 +194,7 @@ $("#Player-1 > button").on("click", function(e){
     usr = $("#Player-1 > input").val().trim();
     db.ref('rps/players/player1').update({
         username: usr,
-        key: usrKey
+        player1key: usrKey
     });
     $("#Player-1 > input").val("");
 
@@ -192,7 +210,7 @@ $("#Player-2 > button").on("click", function(e){
     usr = $("#Player-2 > input").val().trim();
     db.ref('rps/players/player2').update({
         username: usr,
-        key: usrKey
+        player2key: usrKey
     });
     $("#Player-2 > input").val("");
 
