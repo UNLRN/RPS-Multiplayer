@@ -11,18 +11,20 @@ let config = {
 firebase.initializeApp(config);
 
 const db = firebase.database();
+const player1ref = db.ref('players/player1');
+const player2ref = db.ref('players/player2');
 
 let usr;
 let usrKey;
-$("#Player-2").hide();
+let player;
+$("#player2").hide();
 $("#join-chat").hide();
 
-const connectionRef = db.ref('connections');
+const connectedUsers = db.ref('users');
 const connectedRef = db.ref(".info/connected");
 connectedRef.on('value', function(snap) {
     if (snap.val() === true) {
-        console.log('connected');
-        let con = db.ref('connections').push(true);
+        let con = connectedUsers.push(true);
         usrKey = con.key;
         con.onDisconnect().remove();
     }
@@ -39,55 +41,69 @@ connectedRef.on('value', function(snap) {
 
 
 // Username and Players
-db.ref('players').on('value', function(data) {
+db.ref().on('value', function(data) {
     const val = data.val();
 
-    //display for users and players joining
-    if (val.player1.username === "") {
-        $("#join-chat").hide();
+    if (data.hasChild("players")) {
+        
+        if (data.child("players/player1").exists()) {
+            $("#Player-1").hide();
+            $("#player1").text(val.players.player1.username);
+            $("#player1").show();
+        } else {
+            if (player === 2) {
+                $("#player1").text("Waiting for player 1...");
+            } else {
+                $("#Player-1").show();
+                $("#player1").hide();
+            }
+            $("#player1-moves > div").addClass("disabled");
+        }
+
+        if (data.child("players/player2").exists()) {
+            $("#Player-2").hide();
+            $("#player2").text(val.players.player2.username);
+            $("#player2").show();
+        } else {
+            if (player === 1) {
+                $("#player2").text("Waiting for player 2...");
+            } else {
+                $("#Player-2").show();
+                $("#player2").hide();
+            }
+            $("#player2-moves > div").addClass("disabled");
+        }
+
+        if ((data.child("players/player1").exists()) && (!data.child("players/player2"))) {
+            $("#player2").text("Waiting for Player 2");
+            if (!$("#player1-moves > div").hasClass("disabled")) {
+                $("#player1-moves > div").addClass("disabled");
+            }
+        }
+
+        if ((data.child("players/player2").exists()) && (!data.child("players/player1"))) {
+            $("#player1").text("Waiting for Player 1");
+            if (!$("#player2-moves > div").hasClass("disabled")) {
+                $("#player2-moves > div").addClass("disabled");
+            }
+        }
+
+        if ((data.child("players/player1").exists()) && (data.child("players/player2").exists())) {
+            if (player == 1) {
+                $("#player1-moves > div").removeClass("disabled");
+            } else if (player == 2) {
+                $("#player2-moves > div").removeClass("disabled");
+            }
+        }
+
+    } else {
         $("#Player-1").show();
-        $("#me").hide();
-    }
-    if ((val.player1.username === "") && (val.player2.username === "")) {
-        $("#join-chat").hide();
-        $("#Player-2").hide();
-        $("#opponent").text("Waiting for Player 1");
-        $("#opponent").show();
-    }
-
-    if (val.player1.username !== "") {
-        $("#Player-1").hide();
-        $("#me").text(val.player1.username);
-        $("#me").show();
-    }
-    if (val.player2.username !== "") {
-        $("#Player-2").hide();
-        $("#opponent").text(val.player2.username);
-        $("#opponent").show();
-    }
-
-    if ((val.player1.username !== "") && (val.player2.username === "")){
-        $("#join-chat").hide();
+        $("#player1").hide();
+        $("#player1-moves > div").addClass("disabled");
         $("#Player-2").show();
-        $("#opponent").hide();
+        $("#player2").hide();
+        $("#player2-moves > div").addClass("disabled");
     }
-
-    if ((val.player1.username === "") && (val.player2.username !== "")){
-        $("#join-chat").hide();
-        $("#Player-1").show();
-        $("#me").hide();
-    }
-
-    if ((val.player1.username !== "") && (val.player2.username !== "") && (usr === undefined)) {
-        $("#join-chat").show();
-    }
-
-    if ((val.player1.username === usr) || (val.player2.username === usr)) {
-        $("#join-chat").hide();
-    }
-
-    //display of players
-
 
 });
 
@@ -95,26 +111,57 @@ db.ref('players').on('value', function(data) {
 $("#Player-1 > button").on("click", function(e){
     e.preventDefault();
 
+    player = 1;
     usr = $("#Player-1 > input").val().trim();
     db.ref('players/player1').update({
         username: usr,
         key: usrKey
     });
     $("#Player-1 > input").val("");
+
+    $("#Player-1").hide();
+    $("#Player-2").hide();
+    $("#player2").show();
 });
 
 $("#Player-2 > button").on("click", function(e){
     e.preventDefault();
 
+    player = 2;
     usr = $("#Player-2 > input").val().trim();
     db.ref('players/player2').update({
         username: usr,
         key: usrKey
     });
     $("#Player-2 > input").val("");
+
+    $("#Player-2").hide();
+    $("#Player-1").hide();
+    $("#player1").show();
 });
 
 //Player 1 and 2 moves events
+$("#player1-moves > div").on("click", function() {
+    $(this).css({ "background-color": "red", "color": "white"});
+    if (!$("#player1-moves > div").hasClass("disabled")) {
+        $("#player1-moves > div").addClass("disabled");
+    }
+    let choice = $(this).text();
+    player1ref.update({choice: choice});
+});
+
+$("#player2-moves > div").on("click", function() {
+    $(this).css({ "background-color": "red", "color": "white"});
+    if (!$("#player2-moves > div").hasClass("disabled")) {
+        $("#player2-moves > div").addClass("disabled");
+    }
+    let choice = $(this).text();
+    player2ref.update({choice: choice});
+});
+
+const showWinner = function() {
+
+};
 
 
 

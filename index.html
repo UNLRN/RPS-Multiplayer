@@ -12,42 +12,47 @@
 <body>
     <div class="container">
         <div class="row" id="main">
+            <div class="col-xs-12" id="winner"></div>
             <div class="col-xs-12">
                 <div class="row">
-                    <div id="opponent-main">
+                    <div id="player2-main">
                         <div class="row">
-                            <div class="col-xs-12 text-center" id="opponent-name">
-                                <span id="opponent">Waiting for Player 1</span>
-                                <div id="Player-2">
-                                    <input type="text" class="form-control" autocomplete="off" placeholder="Type a username to play...">
-                                    <button type="submit" class="btn btn-default" id="player2-submit">OK</button>
+                            <div class="col-xs-12 text-center" id="player2-name">
+                                <span id="player2">Waiting for Player 1</span>
+                                <div>
+                                    <form action="#" id="Player-2">
+                                        <input type="text" class="form-control" autocomplete="off" placeholder="Type a username to play...">
+                                        <button type="submit" class="btn btn-default" id="player2-submit">OK</button>
+                                    </form>
                                 </div>
                             </div>
-                            <div class="col-xs-12 text-center" id="opponent-moves">
-                                <div class="col-xs-4" id="opponent-rock">Rock</div>
-                                <div class="col-xs-4" id="opponent-paper">Paper</div>
-                                <div class="col-xs-4" id="opponent-scissors">Scissors</div>
+                            <div class="col-xs-12 text-center" id="player2-moves">
+                                <div class="col-xs-4 disabled" id="player2-rock">Rock</div>
+                                <div class="col-xs-4 disabled" id="player2-paper">Paper</div>
+                                <div class="col-xs-4 disabled" id="player2-scissors">Scissors</div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-4" id="opponent-picture">
+                    <div class="col-xs-4" id="player2-picture">
                         <img src="./assets/images/115-Front.png" alt="" class="img-responsive">
                     </div>
-                    <div class="col-xs-4" id="my-picture">
+                    <div class="col-xs-4" id="player1-picture">
                         <img src="./assets/images/140-Back.png" alt="" class="img-responsive">
                     </div>
-                    <div id="my-main">
+                    <div id="player1-main">
                         <div class="row">
-                            <div class="col-xs-12 text-center" id="my-moves">
-                                <div class="col-xs-4" id="my-rock">Rock</div>
-                                <div class="col-xs-4" id="my-paper">Paper</div>
-                                <div class="col-xs-4" id="my-scissors">Scissors</div>
+                            <div class="col-xs-12 text-center" id="player1-moves">
+                                <div class="col-xs-4 disabled" id="player1-rock">Rock</div>
+                                <div class="col-xs-4 disabled" id="player1-paper">Paper</div>
+                                <div class="col-xs-4 disabled" id="player1-scissors">Scissors</div>
                             </div>
-                            <div class="col-xs-12 text-center" id="my-name">
-                                <span id="me"></span>
-                                <div id="Player-1">
-                                    <input type="text" class="form-control" autocomplete="off" placeholder="Type a username to play...">
-                                    <button type="submit" class="btn btn-default" id="player1-submit">OK</button>
+                            <div class="col-xs-12 text-center" id="player1-name">
+                                <span id="player1"></span>
+                                <div>
+                                    <form action="#" id="Player-1">
+                                        <input type="text" class="form-control" autocomplete="off" placeholder="Type a username to play...">
+                                        <button type="submit" class="btn btn-default" id="player1-submit">OK</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -59,7 +64,7 @@
         <!--Join chat container-->
         <div class="row" id="join-chat">
             <div class="col-xs-12" id="user-input">
-                    <input type="text" class="form-control" autocomplete="off" autocomplete="off" placeholder="Type a username to join chat...">
+                    <input type="text" class="form-control" autocomplete="off" placeholder="Type a username to join chat...">
                     <button type="submit" class="btn btn-default">OK</button>
             </div>
         </div>

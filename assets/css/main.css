@@ -7182,7 +7182,7 @@ body {
     box-shadow: 0 1px 3px rgba(0,0,0,0.12),0 1px 2px rgba(0,0,0,0.24);
 }
 
-#opponent-main,#my-main {
+#player2-main,#player1-main {
     height: 100px;
     line-height: 40px;
     width: 50%;
@@ -7191,57 +7191,57 @@ body {
     background-color: #ddd;
 }
 
-#opponent-main {
+#player2-main {
     float: left;
 }
 
-#opponent-main .row {
+#player2-main .row {
     margin: 0;
 }
 
-#opponent-picture {
+#player2-picture {
     float: right;
 }
 
-#opponent-moves {
+#player2-moves {
     background-color: #fff;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12),0 1px 2px rgba(0,0,0,0.24);
 }
 
-#opponent-moves div {
+#player2-moves div {
     cursor: pointer;
 }
 
-#opponent-moves div:hover {
+#player2-moves div:hover {
     outline: 1px red solid;
     outline-offset: -1px;
 }
 
-#my-picture {
+#player1-picture {
     position: relative;
     margin-top: 100px;
 }
 
-#my-main {
+#player1-main {
     position: absolute;
     bottom: 0;
     right: 0;
 }
 
-#my-main .row {
+#player1-main .row {
     margin: 10px 0;
 }
 
-#my-moves {
+#player1-moves {
     background-color: #fff;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12),0 1px 2px rgba(0,0,0,0.24);
 }
 
-#my-moves div {
+#player1-moves div {
     cursor: pointer;
 }
 
-#my-moves div:hover {
+#player1-moves div:hover {
     outline: 1px red solid;
     outline-offset: -1px;
 }
@@ -7296,4 +7296,8 @@ input {
     height: 36px;
     width: calc(100% - 80px) !important;
     display: inline-block !important;
+}
+
+.disabled {
+    pointer-events: none;
 }

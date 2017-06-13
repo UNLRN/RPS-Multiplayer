@@ -16,7 +16,7 @@ body
     background-color: #eee
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 
-#opponent-main, #my-main
+#player2-main, #player1-main
     height: 100px
     line-height: 40px
     width: 50%
@@ -24,15 +24,15 @@ body
     padding: 5px 20px
     background-color: #ddd
 
-#opponent-main
+#player2-main
     float: left
     .row
         margin: 0    
 
-#opponent-picture
+#player2-picture
     float: right
 
-#opponent-moves
+#player2-moves
     background-color: #fff
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
     div
@@ -41,18 +41,18 @@ body
             outline: 1px red solid
             outline-offset: -1px
 
-#my-picture
+#player1-picture
     position: relative
     margin-top: 100px
 
-#my-main
+#player1-main
     position: absolute
     bottom: 0
     right: 0
     .row
         margin: 10px 0
 
-#my-moves
+#player1-moves
     background-color: #fff
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
     div
@@ -105,4 +105,5 @@ input
     width: calc(100% - 80px) !important
     display: inline-block !important
 
-
+.disabled
+    pointer-events: none
