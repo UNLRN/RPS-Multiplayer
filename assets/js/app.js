@@ -21,6 +21,10 @@ $("#player2").hide();
 $("#join-chat").hide();
 $("#scores").hide();
 
+$("#reset").on("click", function() {
+    db.ref('rps').set("")
+});
+
 const connectedUsers = db.ref('users');
 const connectedRef = db.ref(".info/connected");
 connectedRef.on('value', function(snap) {
